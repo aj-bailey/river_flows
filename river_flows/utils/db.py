@@ -24,7 +24,7 @@ def initialize_db():
         raise DatabaseInitializationException
 
 @contextmanager
-def get_session() -> Session:
+def get_session():
     session = TransactionalSession()
 
     try:
