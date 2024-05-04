@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+    river_flows:
+        networks:
+            - local
+        build:
+            context: ../
+            dockerfile: Dockerfile
+        container_name: "river_flows-test"
+        # depends_on:
+        #     postgres-local:
+                # condition: service_healthy
+        environment:
+            APP_ENV: test
+        ports:
+            - "8000:8000"
+        volumes:
+            - ../:/app:cached
+        
+        command: uvicorn river_flows.app:app --host 0.0.0.0 --port 8000 --reload
+
+    postgres-local:
+        networks:
+            - local
+        image: postgres:14
+        container_name: postgres-test
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_PASSWORD: postgres
+            PGUSER: postgres
+            POSTGRES_DB: river_flows-test
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        # healthcheck:
+        #     test: "pg_isready -q"
+        command: ["postgres", "-c", "log_statement=all"]
+    
+networks:
+    local:
+        driver: bridge
+
+volumes:
+  postgres_data:
