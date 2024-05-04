@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "river-flows"
+version = "0.1.0"
+description = "River flow API"
+authors = ["Adam Bailey <ab67319@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
