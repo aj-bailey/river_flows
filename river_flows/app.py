@@ -1,0 +1,17 @@
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+
+
+@app.get("/health")
+def health():
+    return {
+        'result': 'GOOD'
+    }
