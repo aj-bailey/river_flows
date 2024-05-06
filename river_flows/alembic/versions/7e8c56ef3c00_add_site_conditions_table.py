@@ -1,8 +1,8 @@
-"""Add site condition table
+"""Add site conditions table
 
-Revision ID: ff39ffccf360
+Revision ID: 7e8c56ef3c00
 Revises: 
-Create Date: 2024-05-06 00:01:08.539435
+Create Date: 2024-05-06 00:34:39.247512
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'ff39ffccf360'
+revision: str = '7e8c56ef3c00'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,7 +24,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('site_id', sa.String(), nullable=False),
     sa.Column('site_name', sa.String(), nullable=False),
-    sa.Column('timestamp', sa.DateTime(), nullable=False),
+    sa.Column('timestamp', sa.DateTime(timezone=True), nullable=False),
     sa.Column('value', sa.Integer(), nullable=False),
     sa.Column('unit', sa.String(), nullable=False),
     sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=False),
