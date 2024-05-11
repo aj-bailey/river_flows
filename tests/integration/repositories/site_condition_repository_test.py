@@ -15,6 +15,6 @@ def test__create_site_condition__success(initialize_and_clean_db):
     inserted_site_condition = site_condition_repository.create_record(site_condition)
 
     # Assert
-    expected_site_condition = SiteCondition(id=1, site_id="TEST_ID", site_name="TEST_NAME", timestamp=test_dt, value=1, unit='ft3/s')
+    expected_site_condition = SiteCondition(site_id="TEST_ID", site_name="TEST_NAME", timestamp=test_dt, value=1, unit='ft3/s')
 
     assert inserted_site_condition == expected_site_condition
