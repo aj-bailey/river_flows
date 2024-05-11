@@ -18,7 +18,7 @@ services:
         volumes:
             - .:/app:cached
         
-        command: uvicorn river_flows.app:app --host 0.0.0.0 --port 8000 --reload
+        command: uvicorn river_flows.app:app --host 0.0.0.0 --port 8000
 
     postgres-local:
         networks:
