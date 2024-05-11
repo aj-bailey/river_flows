@@ -5,7 +5,6 @@ from pydantic import BaseModel
 
 
 class SiteCondition(BaseModel):
-    id: Optional[int] = None
     site_id: str
     site_name: str
     timestamp: datetime

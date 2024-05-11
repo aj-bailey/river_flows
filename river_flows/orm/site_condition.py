@@ -9,9 +9,8 @@ from river_flows.orm.mixins import TimestampMixin
 class SiteCondition(Base, TimestampMixin):
     __tablename__ = "site_conditions"
     
-    id: Mapped[int] = mapped_column(primary_key=True)
-    site_id: Mapped[str] = mapped_column(String)
+    site_id: Mapped[str] = mapped_column(String, primary_key=True)
     site_name: Mapped[str] = mapped_column(String)
-    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), primary_key=True)
     value: Mapped[int] = mapped_column(Integer)
     unit: Mapped[str] = mapped_column(String)
