@@ -8,7 +8,7 @@ class SiteCondition(BaseModel):
     site_id: str
     site_name: str
     timestamp: datetime
-    value: int
+    value: float
     unit: str
 
     class Config:

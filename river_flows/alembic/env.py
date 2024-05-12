@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from river_flows.config.config import ALEMBIC_DB_URL
+from river_flows.config.config import ALEMBIC_DB_URL, DATABASE_URL
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -31,7 +31,11 @@ target_metadata = Base.metadata
 # ... etc.
 
 # Dynamically set database_url based on environment
-config.set_main_option('sqlalchemy.url', ALEMBIC_DB_URL)
+# This set_main is for upgrading/downgrading
+config.set_main_option('sqlalchemy.url', DATABASE_URL)
+
+# This set_main is for creating migrations
+# config.set_main_option('sqlalchemy.url', ALEMBIC_DB_URL)
 
 
 def run_migrations_offline() -> None:
