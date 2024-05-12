@@ -4,3 +4,6 @@ class DatabaseInitializationException(Exception):
 
 class DatabaseEngineException(Exception):
     """An exception occurred while initializing the database engine"""
+
+class SiteConditionsException(Exception):
+    """The site_conditions list was not provided"""
