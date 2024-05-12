@@ -22,6 +22,7 @@ class SiteCondition(BaseModel):
 class BatchSiteConditions(BaseModel):
     batch_size: int
     batch_site_conditions: list[list[SiteCondition]]
+    site_conditions: list[SiteCondition]
 
     @model_validator(mode='before')
     def batch_values(cls, values):
