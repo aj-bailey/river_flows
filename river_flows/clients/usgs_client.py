@@ -1,13 +1,16 @@
 from datetime import datetime
+from typing import Optional
 
 from dateutil.parser import parse
 import requests
+from pydantic import ValidationError
 
 from river_flows.config.config import USGS_EWRSD_SITE, USGS_URL
 from river_flows.data.site_condition import SiteCondition
 
 class USGSClient():
-    def __init__(self, base_url: str = USGS_URL, site: str = USGS_EWRSD_SITE):
+    def __init__(self, site: Optional[str] = None, base_url: str = USGS_URL):
+        site = site if site is not None else USGS_EWRSD_SITE
         self.usgs_url = f"{base_url}/?format=json&sites={site}"
 
     def current_river_flow(self) -> SiteCondition:
@@ -53,7 +56,10 @@ class USGSClient():
         for value in values:
             site_dict['timestamp'] = parse(value['dateTime'])
             site_dict['value'] = value['value']
+            
+            try:
+                site_condition_values.append(SiteCondition(**site_dict))
+            except ValidationError as e:
+                print(f"Validation error with SiteCondition record, skipping. Error: {e}")
 
-            site_condition_values.append(SiteCondition(**site_dict))
-        
         return site_condition_values
