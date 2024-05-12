@@ -8,9 +8,9 @@ services:
             context: .
             dockerfile: Dockerfile
         container_name: "river_flows-prod"
-        depends_on:
-            postgres-local:
-                condition: service_healthy
+        # depends_on:
+        #     postgres-local:
+        #         condition: service_healthy
         environment:
             APP_ENV: prod
         ports:
@@ -30,11 +30,11 @@ services:
         environment:
             POSTGRES_PASSWORD: postgres
             PGUSER: postgres
-            POSTGRES_DB: river_flows
+            POSTGRES_DB: river_flows-prod
         volumes:
             - postgres_data:/var/lib/postgresql/data
-        healthcheck:
-            test: "pg_isready -q"
+        # healthcheck:
+        #     test: "pg_isready -q"
         command: ["postgres", "-c", "log_statement=all"]
     
 networks:
