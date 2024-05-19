@@ -15,7 +15,6 @@ def test__save_current_river_flow__success(initialize_and_clean_db):
     
     # Assert
     expected_site_condition = SiteCondition(
-        id=1,
         site_id='09067020',
         site_name='EAGLE R BLW WASTEWATER TREATMENT PLANT AT AVON, CO',
         timestamp=parse("2024-05-06T00:30:00.000+00"),
