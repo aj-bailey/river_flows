@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from datetime import date
 
 from fastapi import Depends, FastAPI
 
@@ -45,3 +46,10 @@ def populate_site_conditions(
         return {"site_conditions_populated": False}
 
     return {"site_conditions_populated": True, "count_site_conditions_upserted": count_site_conditions_upserted}
+
+@app.get("/date_peak/{date}")
+def date_peak(date: date):
+    # TODO 
+    return {
+        'result': date
+    }
