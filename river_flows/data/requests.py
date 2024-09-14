@@ -7,3 +7,9 @@ class PopulateSiteConditionsRequest(BaseModel):
     start_date: str
     end_date: str
     site_id: Optional[str] = None
+
+
+class GetSiteConditionsRequest(BaseModel):
+    start_date: str
+    end_date: str
+    site_id: Optional[str] = None
