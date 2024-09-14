@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 from sqlalchemy.dialects.postgresql import insert
 
@@ -43,3 +45,16 @@ class SiteConditionRepository(AbstractRepository):
         upsert_count = len(records.site_conditions)
 
         return upsert_count
+
+    def get_records(self, start_date: datetime, end_date: datetime, site_id: str) -> list[SiteCondition]:
+        with self.session as session:
+            with session.begin():
+                records = session.query(SiteConditionORM).filter(
+                    SiteConditionORM.timestamp >= start_date,
+                    SiteConditionORM.timestamp < end_date,
+                    SiteConditionORM.site_id == site_id
+                ).all()
+
+            results = [SiteCondition.model_validate(record) for record in records]
+
+        return results
