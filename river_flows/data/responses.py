@@ -16,3 +16,7 @@ class BaseResponse(BaseModel, Generic[ModelType]):
 
 class SiteConditionResponse(BaseResponse[SiteCondition]):
     pass
+
+
+class SiteConditionsResponse(BaseResponse[list[SiteCondition]]):
+    pass
