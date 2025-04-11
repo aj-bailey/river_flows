@@ -21,6 +21,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from river_flows.orm.base import Base
 from river_flows.orm.site_condition import SiteCondition
+from river_flows.orm.snotel import Snotel
 
 # target_metadata = Base.metadata
 target_metadata = Base.metadata
