@@ -1,5 +1,3 @@
-version: "3"
-
 services:
     river_flows:
         networks:
