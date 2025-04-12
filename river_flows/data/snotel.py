@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-class SiteCondition(BaseModel):
+class Snotel(BaseModel):
     station_triplets: str
     timestamp: datetime
     prec: Optional[float] = None
