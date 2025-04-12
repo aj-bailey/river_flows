@@ -1,3 +1,6 @@
+build-local:
+	docker compose build
+
 prod-compose-bash:
 	docker compose up -d && \
 	docker compose exec river_flows /bin/bash && \
