@@ -5,11 +5,14 @@ from fastapi import Depends, FastAPI
 
 from river_flows.background_jobs.scheduler import schedule_jobs
 from river_flows.clients.usgs_client import USGSClient
-from river_flows.data.requests import GetSiteConditionsRequest, PopulateSiteConditionsRequest
+from river_flows.clients.snotel_client import SnotelAPIClient
+from river_flows.data.requests import GetSiteConditionsRequest, PopulateSiteConditionsRequest, PopulateSnotelRequest
 from river_flows.data.responses import SiteConditionsResponse
 from river_flows.handlers.populate_site_conditions_handler import PopulateSiteConditionsHandler
+from river_flows.handlers.populate_snotel_handler import PopulateSnotelHandler
 from river_flows.handlers.site_conditions_handler import SiteConditionsHandler
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
+from river_flows.repositories.snotel_repository import SnotelRepository
 from river_flows.utils.db import initialize_db, get_session
 
 @asynccontextmanager
@@ -82,3 +85,22 @@ def site_conditions(
         result="success",
         data=site_conditions
     )
+
+@app.post("/populate_snotel")
+def populate_snotel_year(
+        request_params: PopulateSnotelRequest,
+        session = Depends(get_session),
+        ):
+    year = request_params.year
+    station_triplets = request_params.station_triplets
+
+    snotel_repo = SnotelRepository(session)
+    snotel_client = SnotelAPIClient()
+    handler = PopulateSnotelHandler(snotel_client=snotel_client, snotel_repository=snotel_repo)
+
+    try:
+        count_snotel_upserted = handler.handle(year=year, station_triplets=station_triplets)   
+    except Exception as e:
+        return {"site_conditions_populated": False}
+
+    return {"site_conditions_populated": True, "count_site_conditions_upserted": count_snotel_upserted}
