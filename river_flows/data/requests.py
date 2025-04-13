@@ -18,3 +18,9 @@ class GetSiteConditionsRequest(BaseModel):
 class PopulateSnotelRequest(BaseModel):
     year: str
     station_triplets: str
+
+
+class GetSnotelRequest(BaseModel):
+    start_date: str
+    end_date: str
+    station_triplets: str

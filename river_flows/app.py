@@ -6,11 +6,18 @@ from fastapi import Depends, FastAPI
 from river_flows.background_jobs.scheduler import schedule_jobs
 from river_flows.clients.usgs_client import USGSClient
 from river_flows.clients.snotel_client import SnotelAPIClient
-from river_flows.data.requests import GetSiteConditionsRequest, PopulateSiteConditionsRequest, PopulateSnotelRequest
-from river_flows.data.responses import SiteConditionsResponse
+from river_flows.data.requests import (
+    GetSiteConditionsRequest,
+    GetSnotelRequest,
+    PopulateSiteConditionsRequest, 
+    PopulateSnotelRequest
+)
+from river_flows.data.responses import SiteConditionsResponse, SnotelResponse
 from river_flows.handlers.populate_site_conditions_handler import PopulateSiteConditionsHandler
 from river_flows.handlers.populate_snotel_handler import PopulateSnotelHandler
+from river_flows.handlers.predict_peak_river_flow import PredictPeakRiverFlowHandler
 from river_flows.handlers.site_conditions_handler import SiteConditionsHandler
+from river_flows.handlers.snotel_handler import SnotelHandler
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
 from river_flows.repositories.snotel_repository import SnotelRepository
 from river_flows.utils.db import initialize_db, get_session
@@ -104,3 +111,28 @@ def populate_snotel_year(
         return {"site_conditions_populated": False}
 
     return {"site_conditions_populated": True, "count_site_conditions_upserted": count_snotel_upserted}
+
+@app.get("/snotel")
+def snotel(
+    request_params: GetSnotelRequest = Depends(),
+    session = Depends(get_session),
+):
+    start_date = request_params.start_date
+    end_date = request_params.end_date
+    station_triplets = request_params.station_triplets
+
+    snotel_repo = SnotelRepository(session)
+    handler = SnotelHandler(snotel_repo=snotel_repo)
+    
+    try:
+        snotel_data = handler.handle(start_date=start_date, end_date=end_date, station_triplets=station_triplets)
+    except Exception as e:
+        return SnotelResponse(
+        result="failure",
+        error=str(e)
+    )
+
+    return SnotelResponse(
+        result="success",
+        data=snotel_data
+    )
