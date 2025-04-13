@@ -2,6 +2,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from functools import reduce
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -52,7 +53,15 @@ class SnotelAPIClient():
         dfs_merged = dfs_merged.rename(columns={'date': 'timestamp'})
         dfs_merged['station_triplets'] = station_triplet
 
-        data_dict = dfs_merged.to_dict(orient='records')
+        # Clean NaN values
+        dfs_cleaned = dfs_merged.replace({
+            np.inf: None,
+            -np.inf: None,
+            np.nan: None,
+            'NaN': None
+        })
+
+        data_dict = dfs_cleaned.to_dict(orient='records')
         snotel_data = [Snotel.model_validate(data) for data in data_dict]
 
         return snotel_data
