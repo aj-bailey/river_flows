@@ -5,11 +5,15 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import create_database, database_exists
 
 from river_flows.config.config import DATABASE_URL
-from river_flows.data.exceptions import DatabaseInitializationException, DatabaseEngineException
+from river_flows.data.exceptions import (
+    DatabaseInitializationException,
+    DatabaseEngineException,
+)
 
 
 _engine: Engine = create_engine(url=DATABASE_URL, pool_pre_ping=True)
 TransactionalSession = sessionmaker(_engine)
+
 
 def initialize_db():
     try:
@@ -22,6 +26,7 @@ def initialize_db():
             print("Database created!")
     except Exception:
         raise DatabaseInitializationException
+
 
 @contextmanager
 def get_session():

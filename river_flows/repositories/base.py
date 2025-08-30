@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from river_flows.data.responses import ModelType
 
+
 class AbstractRepository(ABC):
     def __init__(self, session: Session):
         self.session = session

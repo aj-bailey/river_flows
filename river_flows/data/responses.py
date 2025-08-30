@@ -6,7 +6,7 @@ from river_flows.data.site_condition import SiteCondition
 from river_flows.data.snotel import Snotel
 
 
-ModelType = TypeVar('ModelType', bound=BaseModel)
+ModelType = TypeVar("ModelType", bound=BaseModel)
 
 
 class BaseResponse(BaseModel, Generic[ModelType]):

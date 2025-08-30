@@ -23,6 +23,10 @@ python-dateutil = "^2.9.0.post0"
 vcrpy = "^6.0.1"
 apscheduler = "^3.10.4"
 pandas = "^2.2.3"
+beautifulsoup4 = "^4.13.4"
+lxml = "^5.4.0"
+mypy = "^1.16.1"
+ruff = "^0.12.1"
 
 
 [build-system]

@@ -25,20 +25,22 @@ class SnotelRepository(AbstractRepository):
         with self.session as session:
             for batch in records.batch_snotel:
                 with session.begin():
-                    snotel_data = [record.model_dump(exclude_unset=True) for record in batch]
+                    snotel_data = [
+                        record.model_dump(exclude_unset=True) for record in batch
+                    ]
                     insert_stmt = insert(SnotelORM).values(snotel_data)
                     upsert_stmt = insert_stmt.on_conflict_do_update(
                         index_elements=[
                             SnotelORM.station_triplets,
-                            SnotelORM.timestamp
+                            SnotelORM.timestamp,
                         ],
                         set_={
                             "prec": insert_stmt.excluded.prec,
                             "tobs": insert_stmt.excluded.tobs,
                             "wteq": insert_stmt.excluded.wteq,
                             "snwd": insert_stmt.excluded.snwd,
-                            "updated_at": insert_stmt.excluded.updated_at
-                        }
+                            "updated_at": insert_stmt.excluded.updated_at,
+                        },
                     )
 
                     session.execute(upsert_stmt)
@@ -47,14 +49,20 @@ class SnotelRepository(AbstractRepository):
 
         return upsert_count
 
-    def get_records(self, start_date: datetime, end_date: datetime, station_triplets: str) -> list[Snotel]:
+    def get_records(
+        self, start_date: datetime, end_date: datetime, station_triplets: str
+    ) -> list[Snotel]:
         with self.session as session:
             with session.begin():
-                records = session.query(SnotelORM).filter(
-                    SnotelORM.timestamp >= start_date,
-                    SnotelORM.timestamp < end_date,
-                    SnotelORM.station_triplets == station_triplets
-                ).all()
+                records = (
+                    session.query(SnotelORM)
+                    .filter(
+                        SnotelORM.timestamp >= start_date,
+                        SnotelORM.timestamp < end_date,
+                        SnotelORM.station_triplets == station_triplets,
+                    )
+                    .all()
+                )
 
             results = [Snotel.model_validate(record) for record in records]
 

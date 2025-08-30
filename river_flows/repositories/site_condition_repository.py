@@ -25,19 +25,21 @@ class SiteConditionRepository(AbstractRepository):
         with self.session as session:
             for batch in records.batch_site_conditions:
                 with session.begin():
-                    site_condition_values = [record.model_dump(exclude_unset=True) for record in batch]
+                    site_condition_values = [
+                        record.model_dump(exclude_unset=True) for record in batch
+                    ]
                     insert_stmt = insert(SiteConditionORM).values(site_condition_values)
                     upsert_stmt = insert_stmt.on_conflict_do_update(
                         index_elements=[
                             SiteConditionORM.site_id,
-                            SiteConditionORM.timestamp
+                            SiteConditionORM.timestamp,
                         ],
                         set_={
                             "site_name": insert_stmt.excluded.site_name,
                             "value": insert_stmt.excluded.value,
                             "unit": insert_stmt.excluded.unit,
-                            "updated_at": insert_stmt.excluded.updated_at
-                        }
+                            "updated_at": insert_stmt.excluded.updated_at,
+                        },
                     )
 
                     session.execute(upsert_stmt)
@@ -46,14 +48,20 @@ class SiteConditionRepository(AbstractRepository):
 
         return upsert_count
 
-    def get_records(self, start_date: datetime, end_date: datetime, site_id: str) -> list[SiteCondition]:
+    def get_records(
+        self, start_date: datetime, end_date: datetime, site_id: str
+    ) -> list[SiteCondition]:
         with self.session as session:
             with session.begin():
-                records = session.query(SiteConditionORM).filter(
-                    SiteConditionORM.timestamp >= start_date,
-                    SiteConditionORM.timestamp < end_date,
-                    SiteConditionORM.site_id == site_id
-                ).all()
+                records = (
+                    session.query(SiteConditionORM)
+                    .filter(
+                        SiteConditionORM.timestamp >= start_date,
+                        SiteConditionORM.timestamp < end_date,
+                        SiteConditionORM.site_id == site_id,
+                    )
+                    .all()
+                )
 
             results = [SiteCondition.model_validate(record) for record in records]
 

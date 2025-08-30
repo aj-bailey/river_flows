@@ -33,7 +33,7 @@ target_metadata = Base.metadata
 
 # Dynamically set database_url based on environment
 # This set_main is for upgrading/downgrading
-config.set_main_option('sqlalchemy.url', DATABASE_URL)
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # This set_main is for creating migrations
 # config.set_main_option('sqlalchemy.url', ALEMBIC_DB_URL)
@@ -77,9 +77,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

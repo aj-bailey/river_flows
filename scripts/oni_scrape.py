@@ -1,0 +1,94 @@
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+from io import StringIO
+
+
+def scrape_oni_data(url):
+    """
+    Scrapes the ONI data from the given NOAA website by specifically targeting
+    the data table using BeautifulSoup and then parsing with pandas.
+    """
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        html_content = response.text
+
+        soup = BeautifulSoup(html_content, "lxml")
+
+        target_table_html = None
+        tables_on_page = soup.find_all("table")
+
+        for i, table in enumerate(tables_on_page):
+            table_str = str(table)
+            try:
+                temp_dfs = pd.read_html(StringIO(table_str), header=None)
+                if not temp_dfs:
+                    continue
+
+                temp_df = temp_dfs[0]
+
+                if not temp_df.empty and len(temp_df.columns) == 13:
+                    first_cell_content = str(temp_df.iloc[0, 0]).strip()
+                    if first_cell_content == "Year":
+                        target_table_html = table_str
+                        break
+
+            except Exception:
+                continue
+
+        if target_table_html is None:
+            print(
+                "Could not find the specific ONI data table based on 'Year' header and column count."
+            )
+            return pd.DataFrame()
+
+        oni_df = pd.read_html(StringIO(target_table_html), header=0)[0]
+
+        import ipdb
+
+        ipdb.set_trace()
+        oni_df = oni_df.dropna(how="all")
+        oni_df = oni_df.dropna(axis=1, how="all")
+
+        if "Year" in oni_df.columns:
+            oni_df["Year"] = pd.to_numeric(oni_df["Year"], errors="coerce")
+            oni_df = oni_df.dropna(subset=["Year"])
+            oni_df["Year"] = oni_df["Year"].astype(int)
+
+        for col in oni_df.columns:
+            if col != "Year":
+                oni_df[col] = pd.to_numeric(oni_df[col], errors="coerce")
+
+        return oni_df
+
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching the URL: {e}")
+        return pd.DataFrame()
+    except Exception as e:
+        print(f"An unexpected error occurred during scraping: {e}")
+        return pd.DataFrame()
+
+
+if __name__ == "__main__":
+    oni_url = "https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php"
+    data = scrape_oni_data(oni_url)
+
+    if not data.empty:
+        print("Scraped ONI Data (first 5 rows):")
+        print(data.head())
+
+        # You can now save this data to a CSV file, Excel, or perform further analysis
+        data.to_csv("oni_data.csv", index=False)
+        print("\nData successfully saved to oni_data.csv")
+
+        # Example: Get data for a specific year (e.g., 2023)
+        if "Year" in data.columns:
+            year_2023_data = data[data["Year"] == 2023]
+            if not year_2023_data.empty:
+                print("\nONI Data for 2023:")
+                print(year_2023_data)
+            else:
+                print("\nNo data found for 2023.")
+    else:
+        print("Failed to scrape data.")

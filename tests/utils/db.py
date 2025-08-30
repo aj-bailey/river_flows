@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 
 def clean_database(session: Session) -> None:
-    if os.getenv('APP_ENV', None) == 'test':
+    if os.getenv("APP_ENV", None) == "test":
         with session:
             sql = text("TRUNCATE TABLE site_conditions RESTART IDENTITY CASCADE;")
             session.execute(sql)

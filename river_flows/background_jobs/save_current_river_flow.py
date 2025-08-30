@@ -3,6 +3,7 @@ from river_flows.data.site_condition import SiteCondition
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
 from river_flows.utils.db import get_session
 
+
 def save_current_river_flow() -> SiteCondition:
     usgs_client = USGSClient()
     site_condition_repo = SiteConditionRepository(get_session())
