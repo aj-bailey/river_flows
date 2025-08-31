@@ -12,3 +12,11 @@ class SiteConditionsException(Exception):
 
 class SnotelDataException(Exception):
     """The snotel_data list was not provided"""
+
+
+class UnableToFindONITableException(Exception):
+    """Unable to locate the ONI table from url"""
+
+
+class ONIDataException(Exception):
+    """The oni_data list was not provided"""
