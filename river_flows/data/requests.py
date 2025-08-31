@@ -24,3 +24,6 @@ class GetSnotelRequest(BaseModel):
     start_date: str
     end_date: str
     station_triplets: str
+
+class PopulateONIRequest(BaseModel):
+    year: int | None = None

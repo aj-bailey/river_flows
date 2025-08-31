@@ -9,17 +9,19 @@ from river_flows.clients.snotel_client import SnotelAPIClient
 from river_flows.data.requests import (
     GetSiteConditionsRequest,
     GetSnotelRequest,
+    PopulateONIRequest,
     PopulateSiteConditionsRequest,
     PopulateSnotelRequest,
 )
 from river_flows.data.responses import SiteConditionsResponse, SnotelResponse
+from river_flows.handlers.populate_oni_handler import PopulateONIHandler
 from river_flows.handlers.populate_site_conditions_handler import (
     PopulateSiteConditionsHandler,
 )
 from river_flows.handlers.populate_snotel_handler import PopulateSnotelHandler
-from river_flows.handlers.predict_peak_river_flow import PredictPeakRiverFlowHandler
 from river_flows.handlers.site_conditions_handler import SiteConditionsHandler
 from river_flows.handlers.snotel_handler import SnotelHandler
+from river_flows.repositories.oni_repository import ONIRepository
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
 from river_flows.repositories.snotel_repository import SnotelRepository
 from river_flows.utils.db import initialize_db, get_session
@@ -68,13 +70,7 @@ def populate_site_conditions(
     }
 
 
-@app.get("/date_peak/{date}")
-def date_peak(date: date):
-    # TODO
-    return {"result": date}
-
-
-@app.get("/site_conditions")
+@app.get("/site_conditions") # TODO: refactor /site_conditions/{site_id}/
 def site_conditions(
     request_params: GetSiteConditionsRequest = Depends(),
     session=Depends(get_session),
@@ -143,3 +139,24 @@ def snotel(
         return SnotelResponse(result="failure", error=str(e))
 
     return SnotelResponse(result="success", data=snotel_data)
+
+
+@app.post("/populate_oni")
+def populate_oni(
+    request_params: PopulateONIRequest,
+    session=Depends(get_session),
+):
+    year = request_params.year
+
+    oni_repository = ONIRepository(session)
+    handler = PopulateONIHandler(oni_repository=oni_repository)
+
+    try:
+        count_snotel_upserted = handler.handle(year=year)
+    except Exception as e:
+        return {"oni_populated": False}
+
+    return {
+        "oni_populated": True,
+        "count_oni_populated": count_snotel_upserted,
+    }
