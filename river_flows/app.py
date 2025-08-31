@@ -70,7 +70,7 @@ def populate_site_conditions(
     }
 
 
-@app.get("/site_conditions") # TODO: refactor /site_conditions/{site_id}/
+@app.get("/site_conditions")  # TODO: refactor /site_conditions/{site_id}/
 def site_conditions(
     request_params: GetSiteConditionsRequest = Depends(),
     session=Depends(get_session),

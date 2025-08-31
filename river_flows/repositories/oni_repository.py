@@ -47,9 +47,7 @@ class ONIRepository(AbstractRepository):
 
         return upsert_count
 
-    def get_records(
-        self, year_start: int, year_end: int
-    ) -> list[ONI]:
+    def get_records(self, year_start: int, year_end: int) -> list[ONI]:
         with self.session as session:
             with session.begin():
                 records = (

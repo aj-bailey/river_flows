@@ -1,6 +1,7 @@
 from river_flows.handlers.populate_oni_handler import PopulateONIHandler
 from river_flows.repositories.oni_repository import ONIRepository
 
+
 def test__populate_oni_handler_handle__all_years(initialize_and_clean_db):
     # Arrange
     session = initialize_and_clean_db
@@ -10,9 +11,10 @@ def test__populate_oni_handler_handle__all_years(initialize_and_clean_db):
 
     # Act
     result = handler.handle(year=year)
-    
+
     # Assert
     assert result >= 1
+
 
 def test__populate_oni_handler_handle__single_year(initialize_and_clean_db):
     # Arrange
@@ -23,6 +25,6 @@ def test__populate_oni_handler_handle__single_year(initialize_and_clean_db):
 
     # Act
     result = handler.handle(year=year)
-    
+
     # Assert
     assert result == 1

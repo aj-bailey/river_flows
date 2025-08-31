@@ -6,7 +6,7 @@ from io import StringIO
 from river_flows.data.exceptions import UnableToFindONITableException
 
 
-class ONIScraper():
+class ONIScraper:
     def __init__(self):
         self.oni_url = "https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php"
 

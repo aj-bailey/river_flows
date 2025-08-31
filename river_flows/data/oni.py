@@ -23,6 +23,7 @@ class ONI(BaseModel):
     class Config:
         from_attributes = True
 
+
 class BatchONI(BaseModel):
     batch_size: int
     batch_oni: list[list[ONI]]
