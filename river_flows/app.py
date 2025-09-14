@@ -13,11 +13,12 @@ from river_flows.data.requests import (
     PopulateSiteConditionsRequest,
     PopulateSnotelRequest,
 )
-from river_flows.data.responses import SiteConditionsResponse, SnotelResponse
+from river_flows.data.responses import ONIResponse, SiteConditionsResponse, SnotelResponse
 from river_flows.handlers.populate_oni_handler import PopulateONIHandler
 from river_flows.handlers.populate_site_conditions_handler import (
     PopulateSiteConditionsHandler,
 )
+from river_flows.handlers.oni_handler import ONIHandler
 from river_flows.handlers.populate_snotel_handler import PopulateSnotelHandler
 from river_flows.handlers.site_conditions_handler import SiteConditionsHandler
 from river_flows.handlers.snotel_handler import SnotelHandler
@@ -160,3 +161,15 @@ def populate_oni(
         "oni_populated": True,
         "count_oni_populated": count_snotel_upserted,
     }
+
+@app.get("/oni")
+def oni(session=Depends(get_session)):
+    oni_repository = ONIRepository(session)
+    handler = ONIHandler(oni_repository=oni_repository)
+
+    try:
+        oni_data = handler.handle()
+    except Exception as e:
+        return ONIResponse(result="failure", error=str(e))
+
+    return ONIResponse(result="success", data=oni_data)

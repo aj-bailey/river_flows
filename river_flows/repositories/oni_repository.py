@@ -47,18 +47,13 @@ class ONIRepository(AbstractRepository):
 
         return upsert_count
 
-    def get_records(self, year_start: int, year_end: int) -> list[ONI]:
+    def get_records(self) -> list[ONI]:
         with self.session as session:
             with session.begin():
                 records = (
                     session.query(OniORM)
-                    .filter(
-                        OniORM.year >= year_start,
-                        OniORM.year < (year_end + 1),
-                    )
                     .all()
                 )
-
             results = [ONI.model_validate(record) for record in records]
 
         return results

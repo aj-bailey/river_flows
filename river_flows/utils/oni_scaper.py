@@ -1,5 +1,6 @@
-import requests
+import numpy as np
 import pandas as pd
+import requests
 from bs4 import BeautifulSoup
 from io import StringIO
 
@@ -65,6 +66,7 @@ class ONIScraper:
                     oni_df[col] = pd.to_numeric(oni_df[col], errors="coerce")
 
             oni_df.columns = [col.lower() for col in oni_df.columns]
+            oni_df = oni_df.replace({np.nan: None})
 
             return oni_df
 
