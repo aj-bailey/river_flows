@@ -28,3 +28,8 @@ class GetSnotelRequest(BaseModel):
 
 class PopulateONIRequest(BaseModel):
     year: int | None = None
+
+
+class PopulateHourlyRiverFlowFeaturesRequest(BaseModel):
+    year: int
+    site_id: Optional[str] = None
