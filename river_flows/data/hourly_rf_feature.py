@@ -2,7 +2,6 @@ from datetime import datetime, date
 
 from pydantic import BaseModel, model_validator
 
-from river_flows.data.exceptions import ONIDataException
 from river_flows.data.exceptions import HourlyRFFeatureException
 
 DEFAULT_BATCH_SIZE = 1000
