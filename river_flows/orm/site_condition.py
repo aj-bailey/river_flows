@@ -12,8 +12,6 @@ class SiteCondition(Base, TimestampMixin):
 
     site_id: Mapped[str] = mapped_column(String, primary_key=True)
     site_name: Mapped[str] = mapped_column(String)
-    timestamp: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), primary_key=True
-    )
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), primary_key=True)
     value: Mapped[int] = mapped_column(Float)
     unit: Mapped[str] = mapped_column(String)

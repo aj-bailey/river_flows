@@ -10,9 +10,7 @@ class SiteConditionsHandler:
     def __init__(self, site_condition_repo: SiteConditionRepository):
         self.site_condition_repo = site_condition_repo
 
-    def handle(
-        self, start_date: str, end_date: str, site_id: Optional[str]
-    ) -> list[SiteCondition]:
+    def handle(self, start_date: str, end_date: str, site_id: Optional[str]) -> list[SiteCondition]:
         start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
         end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
 

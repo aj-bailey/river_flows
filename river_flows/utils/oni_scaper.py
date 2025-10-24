@@ -46,9 +46,7 @@ class ONIScraper:
                     continue
 
             if target_table_html is None:
-                print(
-                    "Could not find the specific ONI data table based on 'Year' header and column count."
-                )
+                print("Could not find the specific ONI data table based on 'Year' header and column count.")
                 raise UnableToFindONITableException()
 
             oni_df = pd.read_html(StringIO(target_table_html), header=0)[0]

@@ -1,7 +1,5 @@
-
 import pytest
 import vcr
-
 
 
 TEST_PATH = "tests/fixtures/integration/app_test/"
@@ -39,9 +37,7 @@ def test__populate_site_conditions__success(test_client):
 
 
 @pytest.mark.parametrize("seed_site_conditions", [10], indirect=True)
-def test__site_conditions__success(
-    initialize_and_clean_db, test_client, seed_site_conditions
-):
+def test__site_conditions__success(initialize_and_clean_db, test_client, seed_site_conditions):
     # Arrange
 
     # Act

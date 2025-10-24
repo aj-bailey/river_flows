@@ -25,9 +25,7 @@ class SnotelRepository(AbstractRepository):
         with self.session as session:
             for batch in records.batch_snotel:
                 with session.begin():
-                    snotel_data = [
-                        record.model_dump(exclude_unset=True) for record in batch
-                    ]
+                    snotel_data = [record.model_dump(exclude_unset=True) for record in batch]
                     insert_stmt = insert(SnotelORM).values(snotel_data)
                     upsert_stmt = insert_stmt.on_conflict_do_update(
                         index_elements=[
@@ -49,9 +47,7 @@ class SnotelRepository(AbstractRepository):
 
         return upsert_count
 
-    def get_records(
-        self, start_date: datetime, end_date: datetime, station_triplets: str
-    ) -> list[Snotel]:
+    def get_records(self, start_date: datetime, end_date: datetime, station_triplets: str) -> list[Snotel]:
         with self.session as session:
             with session.begin():
                 records = (

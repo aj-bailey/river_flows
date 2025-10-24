@@ -17,9 +17,7 @@ def save_previous_date_river_flows() -> SiteCondition:
     site_condition_repo = SiteConditionRepository(get_session())
     start_date, end_date = _get_previous_date_start_end()
 
-    previous_date_river_flows = usgs_client.timeframe_river_flow(
-        start_date=start_date, end_date=end_date
-    )
+    previous_date_river_flows = usgs_client.timeframe_river_flow(start_date=start_date, end_date=end_date)
     site_conditions = BatchSiteConditions(site_conditions=previous_date_river_flows)
 
     site_conditions_count = site_condition_repo.upsert_records(site_conditions)

@@ -8,9 +8,7 @@ class SnotelHandler:
     def __init__(self, snotel_repo: SnotelRepository):
         self.snotel_repo = snotel_repo
 
-    def handle(
-        self, start_date: str, end_date: str, station_triplets: str
-    ) -> list[Snotel]:
+    def handle(self, start_date: str, end_date: str, station_triplets: str) -> list[Snotel]:
         start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
         end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
 

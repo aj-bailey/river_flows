@@ -16,14 +16,10 @@ def test__handle__success(initialize_and_clean_db):
     session = initialize_and_clean_db
     usgs_client = USGSClient()
     site_condition_repo = SiteConditionRepository(session)
-    handler = PopulateSiteConditionsHandler(
-        usgs_client=usgs_client, site_condition_repo=site_condition_repo
-    )
+    handler = PopulateSiteConditionsHandler(usgs_client=usgs_client, site_condition_repo=site_condition_repo)
 
     # Act
-    count_site_conditions_upserted = handler.handle(
-        start_date="05-01-2024", end_date="05-02-2024"
-    )
+    count_site_conditions_upserted = handler.handle(start_date="05-01-2024", end_date="05-02-2024")
 
     # Assert
     assert count_site_conditions_upserted == 96

@@ -46,21 +46,15 @@ class SnotelAPIClient:
 
         for element_data in data["data"]:
             element_name = element_data["stationElement"]["elementCode"]
-            df = pd.DataFrame(element_data["values"]).rename(
-                columns={"value": element_name.lower()}
-            )
+            df = pd.DataFrame(element_data["values"]).rename(columns={"value": element_name.lower()})
             element_dfs.append(df)
 
-        dfs_merged = reduce(
-            lambda df1, df2: pd.merge(df1, df2, on="date", how="outer"), element_dfs
-        )
+        dfs_merged = reduce(lambda df1, df2: pd.merge(df1, df2, on="date", how="outer"), element_dfs)
         dfs_merged = dfs_merged.rename(columns={"date": "timestamp"})
         dfs_merged["station_triplets"] = station_triplet
 
         # Clean NaN values
-        dfs_cleaned = dfs_merged.replace(
-            {np.inf: None, -np.inf: None, np.nan: None, "NaN": None}
-        )
+        dfs_cleaned = dfs_merged.replace({np.inf: None, -np.inf: None, np.nan: None, "NaN": None})
 
         data_dict = dfs_cleaned.to_dict(orient="records")
         snotel_data = [Snotel.model_validate(data) for data in data_dict]

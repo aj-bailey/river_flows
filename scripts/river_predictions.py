@@ -86,9 +86,7 @@ model.plot(forecast)
 # plt.title('Prophet Forecast')
 plt.xlabel("Date")
 plt.ylabel("y")
-plt.legend(
-    ["Historical Data", "Forecast (yhat)", "Uncertainty Interval"], loc="upper left"
-)
+plt.legend(["Historical Data", "Forecast (yhat)", "Uncertainty Interval"], loc="upper left")
 plt.show()
 
 # # Benchmark model with no regressors

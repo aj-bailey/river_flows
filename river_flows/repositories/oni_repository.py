@@ -1,4 +1,3 @@
-
 from sqlalchemy.orm import Session
 from sqlalchemy.dialects.postgresql import insert
 
@@ -15,9 +14,7 @@ class ONIRepository(AbstractRepository):
         with self.session as session:
             for batch in records.batch_oni:
                 with session.begin():
-                    oni_data = [
-                        record.model_dump(exclude_unset=True) for record in batch
-                    ]
+                    oni_data = [record.model_dump(exclude_unset=True) for record in batch]
                     insert_stmt = insert(OniORM).values(oni_data)
                     upsert_stmt = insert_stmt.on_conflict_do_update(
                         index_elements=[

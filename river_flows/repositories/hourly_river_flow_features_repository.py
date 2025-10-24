@@ -14,9 +14,7 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
         total = 0
 
         for batch in records.batch_hourly_rf_features:
-            hourly_rf_feature_data = [
-                record.model_dump(exclude_unset=True) for record in batch
-            ]
+            hourly_rf_feature_data = [record.model_dump(exclude_unset=True) for record in batch]
             if not hourly_rf_feature_data:
                 continue
 

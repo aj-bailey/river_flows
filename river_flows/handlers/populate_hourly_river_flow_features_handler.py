@@ -69,9 +69,7 @@ class PopulateHourlyRiverFlowFeaturesHandler:
         site_condition_data = self.site_condition_repository.get_records(
             start_date=start_dt, end_date=end_dt, site_id=site_id
         )
-        site_conditions_df = pd.DataFrame(
-            [sc.model_dump() for sc in site_condition_data]
-        )[site_condition_cols]
+        site_conditions_df = pd.DataFrame([sc.model_dump() for sc in site_condition_data])[site_condition_cols]
         df = pd.merge(df, site_conditions_df, on="timestamp", how="left")
         df = df.rename(columns={"value": "flow_cfs"})
 
@@ -89,9 +87,7 @@ class PopulateHourlyRiverFlowFeaturesHandler:
         df["oni_triplet"] = df["month"].map(ONI_MAPPING)
         oni_data = self.oni_repository.get_records()
         oni_df = pd.DataFrame([oni.model_dump() for oni in oni_data])
-        oni_long_df = oni_df.melt(
-            id_vars="year", var_name="oni_triplet", value_name="oni_value"
-        )
+        oni_long_df = oni_df.melt(id_vars="year", var_name="oni_triplet", value_name="oni_value")
         df = pd.merge(df, oni_long_df, on=["year", "oni_triplet"], how="left")
         df = df.drop(columns=["oni_triplet"])
 
@@ -119,16 +115,10 @@ class PopulateHourlyRiverFlowFeaturesHandler:
         windows = [3, 6, 24, 168]  # 3h, 6h, 1d, 7d
         for col in ["flow_cfs", "prec", "tobs", "wteq", "snwd"]:
             for w in windows:
-                df[f"{col}_rollmean_{w}h"] = (
-                    df.groupby("site_id")[col].shift(1).rolling(window=w).mean()
-                )
-                df[f"{col}_rollstd_{w}h"] = (
-                    df.groupby("site_id")[col].shift(1).rolling(window=w).std()
-                )
+                df[f"{col}_rollmean_{w}h"] = df.groupby("site_id")[col].shift(1).rolling(window=w).mean()
+                df[f"{col}_rollstd_{w}h"] = df.groupby("site_id")[col].shift(1).rolling(window=w).std()
                 if col in ["prec", "flow_cfs"]:
-                    df[f"{col}_rollsum_{w}h"] = (
-                        df.groupby("site_id")[col].shift(1).rolling(window=w).sum()
-                    )
+                    df[f"{col}_rollsum_{w}h"] = df.groupby("site_id")[col].shift(1).rolling(window=w).sum()
 
         # Hydrological feats
         df["snowmelt_proxy"] = df.groupby("site_id")["wteq"].diff(periods=24) * -1
@@ -137,9 +127,7 @@ class PopulateHourlyRiverFlowFeaturesHandler:
         df["prec_efficiency"] = df["prec"] / (df["snwd"] + 1)
 
         # Climate feats
-        df["oni_lag1m"] = df.groupby("site_id")["oni_value"].shift(
-            24 * 30
-        )  # 1 month lag
+        df["oni_lag1m"] = df.groupby("site_id")["oni_value"].shift(24 * 30)  # 1 month lag
         df["oni_interaction"] = df["oni_value"] * df["month_sin"]
 
         # Backfill columns, lag feats produce nulls
@@ -155,8 +143,6 @@ class PopulateHourlyRiverFlowFeaturesHandler:
         hourly_feats = [HourlyRFFeature.model_validate(record) for record in records]
         batch_hourly_feats = BatchHourlyRFFeatures(hourly_rf_feature_data=hourly_feats)
 
-        upsert_count = self.hourly_rf_feat_repository.upsert_records(
-            records=batch_hourly_feats
-        )
+        upsert_count = self.hourly_rf_feat_repository.upsert_records(records=batch_hourly_feats)
 
         return upsert_count

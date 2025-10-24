@@ -10,9 +10,7 @@ from tests.utils.db import clean_database
 
 @pytest.fixture
 def db_engine():
-    engine = create_engine(
-        "postgresql://postgres:postgres@localhost:5432/river_flows-test"
-    )
+    engine = create_engine("postgresql://postgres:postgres@localhost:5432/river_flows-test")
 
     return engine
 
@@ -27,9 +25,7 @@ def initialize_and_clean_db():
 @pytest.fixture
 def seed_site_conditions(request):
     record_count = request.param
-    test_dt = datetime(
-        year=2024, month=1, day=1, hour=0, minute=0, second=0, tzinfo=timezone.utc
-    )
+    test_dt = datetime(year=2024, month=1, day=1, hour=0, minute=0, second=0, tzinfo=timezone.utc)
     site_conditions = []
 
     for i in range(record_count):

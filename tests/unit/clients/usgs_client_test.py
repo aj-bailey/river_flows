@@ -36,13 +36,9 @@ def test__timeframe_river_flow__success():
     end_date = parse("2024-05-02T00:00")
 
     # Act
-    site_conditions = usgs_client.timeframe_river_flow(
-        start_date=start_date, end_date=end_date
-    )
+    site_conditions = usgs_client.timeframe_river_flow(start_date=start_date, end_date=end_date)
 
     # Assert
     assert isinstance(site_conditions, list)
     assert len(site_conditions) == 97
-    assert all(
-        isinstance(site_condition, SiteCondition) for site_condition in site_conditions
-    )
+    assert all(isinstance(site_condition, SiteCondition) for site_condition in site_conditions)

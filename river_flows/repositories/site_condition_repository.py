@@ -25,9 +25,7 @@ class SiteConditionRepository(AbstractRepository):
         with self.session as session:
             for batch in records.batch_site_conditions:
                 with session.begin():
-                    site_condition_values = [
-                        record.model_dump(exclude_unset=True) for record in batch
-                    ]
+                    site_condition_values = [record.model_dump(exclude_unset=True) for record in batch]
                     insert_stmt = insert(SiteConditionORM).values(site_condition_values)
                     upsert_stmt = insert_stmt.on_conflict_do_update(
                         index_elements=[
@@ -48,9 +46,7 @@ class SiteConditionRepository(AbstractRepository):
 
         return upsert_count
 
-    def get_records(
-        self, start_date: datetime, end_date: datetime, site_id: str
-    ) -> list[SiteCondition]:
+    def get_records(self, start_date: datetime, end_date: datetime, site_id: str) -> list[SiteCondition]:
         with self.session as session:
             with session.begin():
                 records = (

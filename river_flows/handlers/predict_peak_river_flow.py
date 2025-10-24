@@ -14,8 +14,6 @@ class PredictPeakRiverFlowHandler:
         start_dt = datetime.strptime(str(year), "%Y")
         end_dt = datetime.strptime(str(year + 1), "%Y")
 
-        data = self.snotel_repo.get_records(
-            start_date=start_dt, end_date=end_dt, station_triplets=trips[2]
-        )
+        data = self.snotel_repo.get_records(start_date=start_dt, end_date=end_dt, station_triplets=trips[2])
 
         return data

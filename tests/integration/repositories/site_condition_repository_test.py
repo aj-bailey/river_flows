@@ -9,9 +9,7 @@ from river_flows.repositories.site_condition_repository import SiteConditionRepo
 def test__create_site_condition__success(initialize_and_clean_db):
     # Arrange
     session = initialize_and_clean_db
-    test_dt = datetime(
-        year=2024, month=5, day=5, hour=7, minute=30, second=0, tzinfo=timezone.utc
-    )
+    test_dt = datetime(year=2024, month=5, day=5, hour=7, minute=30, second=0, tzinfo=timezone.utc)
     site_condition = SiteCondition(
         **{
             "site_id": "TEST_ID",
@@ -45,9 +43,7 @@ def test__get_site_conditions__success(initialize_and_clean_db, seed_site_condit
     site_condition_repository = SiteConditionRepository(session=session)
 
     # Act
-    records = site_condition_repository.get_records(
-        start_date="2024-01-01", end_date="2024-01-02", site_id="TEST_ID"
-    )
+    records = site_condition_repository.get_records(start_date="2024-01-01", end_date="2024-01-02", site_id="TEST_ID")
 
     # Assert
     assert len(records) == 10

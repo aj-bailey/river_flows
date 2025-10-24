@@ -10,9 +10,7 @@ from river_flows.orm.mixins import TimestampMixin
 class HourlyRFFeature(Base, TimestampMixin):
     __tablename__ = "hourly_river_flow_features"
 
-    timestamp: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), primary_key=True
-    )
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), primary_key=True)
     date: Mapped[d] = mapped_column(Date, nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
     month: Mapped[int] = mapped_column(Integer, nullable=False)

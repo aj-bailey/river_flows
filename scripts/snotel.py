@@ -90,9 +90,7 @@ if __name__ == "__main__":
             continue
 
         element_df = pd.DataFrame(data=e_data["values"])
-        element_df.rename(
-            columns={"value": element_code, "date": "timestamp_local"}, inplace=True
-        )
+        element_df.rename(columns={"value": element_code, "date": "timestamp_local"}, inplace=True)
         element_df["timestamp_local"] = pd.to_datetime(element_df["timestamp_local"])
         element_dfs.append(element_df)
 

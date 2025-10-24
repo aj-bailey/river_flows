@@ -38,9 +38,7 @@ def scrape_oni_data(url):
                 continue
 
         if target_table_html is None:
-            print(
-                "Could not find the specific ONI data table based on 'Year' header and column count."
-            )
+            print("Could not find the specific ONI data table based on 'Year' header and column count.")
             return pd.DataFrame()
 
         oni_df = pd.read_html(StringIO(target_table_html), header=0)[0]

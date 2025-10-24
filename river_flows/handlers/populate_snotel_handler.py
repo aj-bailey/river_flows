@@ -7,9 +7,7 @@ from river_flows.repositories.snotel_repository import SnotelRepository
 
 
 class PopulateSnotelHandler:
-    def __init__(
-        self, snotel_client: SnotelAPIClient, snotel_repository: SnotelRepository
-    ):
+    def __init__(self, snotel_client: SnotelAPIClient, snotel_repository: SnotelRepository):
         self.snotel_client = snotel_client
         self.snotel_repository = snotel_repository
 
@@ -26,8 +24,6 @@ class PopulateSnotelHandler:
         batch_snotel = BatchSnotel(snotel_data=snotel_data)
 
         # Upsert data
-        count_snotel_upserted = self.snotel_repository.upsert_records(
-            records=batch_snotel
-        )
+        count_snotel_upserted = self.snotel_repository.upsert_records(records=batch_snotel)
 
         return count_snotel_upserted

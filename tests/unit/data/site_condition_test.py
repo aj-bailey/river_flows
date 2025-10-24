@@ -10,10 +10,7 @@ def test__batch_values__success():
     # Assert
     assert len(batch.batch_site_conditions) == 2
     assert all(isinstance(batch, list) for batch in batch.batch_site_conditions)
-    assert all(
-        isinstance(conditions, SiteCondition)
-        for conditions in batch.batch_site_conditions[0]
-    )
+    assert all(isinstance(conditions, SiteCondition) for conditions in batch.batch_site_conditions[0])
 
 
 def _build_site_conditions(count: int) -> list[SiteCondition]:

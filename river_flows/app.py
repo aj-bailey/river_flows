@@ -67,14 +67,10 @@ def populate_site_conditions(
 
     usgs_client = USGSClient(site=site_id)
     site_condition_repo = SiteConditionRepository(session)
-    handler = PopulateSiteConditionsHandler(
-        usgs_client=usgs_client, site_condition_repo=site_condition_repo
-    )
+    handler = PopulateSiteConditionsHandler(usgs_client=usgs_client, site_condition_repo=site_condition_repo)
 
     try:
-        count_site_conditions_upserted = handler.handle(
-            start_date=start_date, end_date=end_date
-        )
+        count_site_conditions_upserted = handler.handle(start_date=start_date, end_date=end_date)
     except Exception:
         return {"site_conditions_populated": False}
 
@@ -97,9 +93,7 @@ def site_conditions(
     handler = SiteConditionsHandler(site_condition_repo=site_condition_repo)
 
     try:
-        site_conditions = handler.handle(
-            start_date=start_date, end_date=end_date, site_id=site_id
-        )
+        site_conditions = handler.handle(start_date=start_date, end_date=end_date, site_id=site_id)
     except Exception as e:
         return SiteConditionsResponse(result="failure", error=str(e))
 
@@ -116,14 +110,10 @@ def populate_snotel_year(
 
     snotel_repo = SnotelRepository(session)
     snotel_client = SnotelAPIClient()
-    handler = PopulateSnotelHandler(
-        snotel_client=snotel_client, snotel_repository=snotel_repo
-    )
+    handler = PopulateSnotelHandler(snotel_client=snotel_client, snotel_repository=snotel_repo)
 
     try:
-        count_snotel_upserted = handler.handle(
-            year=year, station_triplets=station_triplets
-        )
+        count_snotel_upserted = handler.handle(year=year, station_triplets=station_triplets)
     except Exception:
         return {"site_conditions_populated": False}
 
@@ -146,9 +136,7 @@ def snotel(
     handler = SnotelHandler(snotel_repo=snotel_repo)
 
     try:
-        snotel_data = handler.handle(
-            start_date=start_date, end_date=end_date, station_triplets=station_triplets
-        )
+        snotel_data = handler.handle(start_date=start_date, end_date=end_date, station_triplets=station_triplets)
     except Exception as e:
         return SnotelResponse(result="failure", error=str(e))
 
