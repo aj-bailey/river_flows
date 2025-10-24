@@ -23,6 +23,7 @@ from river_flows.orm.base import Base
 from river_flows.orm.site_condition import SiteCondition
 from river_flows.orm.snotel import Snotel
 from river_flows.orm.oni import ONI
+from river_flows.orm.hourly_rf_feature import HourlyRFFeature
 
 # target_metadata = Base.metadata
 target_metadata = Base.metadata
