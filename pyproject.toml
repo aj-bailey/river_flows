@@ -27,6 +27,7 @@ beautifulsoup4 = "^4.13.4"
 lxml = "^5.4.0"
 mypy = "^1.16.1"
 ruff = "^0.12.1"
+scikit-learn = "^1.7.2"
 
 
 [build-system]
