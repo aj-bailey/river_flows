@@ -21,5 +21,6 @@ class UnableToFindONITableException(Exception):
 class ONIDataException(Exception):
     """The oni_data list was not provided"""
 
+
 class HourlyRFFeatureException(Exception):
     """The hourly_rf_feature_data list was not provided"""

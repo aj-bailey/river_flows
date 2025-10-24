@@ -50,10 +50,7 @@ class ONIRepository(AbstractRepository):
     def get_records(self) -> list[ONI]:
         with self.session as session:
             with session.begin():
-                records = (
-                    session.query(OniORM)
-                    .all()
-                )
+                records = session.query(OniORM).all()
             results = [ONI.model_validate(record) for record in records]
 
         return results

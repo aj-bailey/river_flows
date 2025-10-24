@@ -30,4 +30,3 @@ class SnotelResponse(BaseResponse[list[Snotel]]):
 
 class ONIResponse(BaseResponse[list[ONI]]):
     pass
-

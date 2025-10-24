@@ -40,6 +40,7 @@ def get_session():
     finally:
         session.close()
 
+
 def get_multi_transaction_session():
     session = TransactionalSession()
 

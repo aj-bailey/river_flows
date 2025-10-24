@@ -8,7 +8,7 @@ def test__oni_handler__success(initialize_and_clean_db):
     session = initialize_and_clean_db
     oni_repository = ONIRepository(session=session)
     handler = ONIHandler(oni_repository=oni_repository)
-    
+
     # Act
     oni_data = handler.handle()
 

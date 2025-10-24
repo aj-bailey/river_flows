@@ -23,25 +23,25 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
             insert_stmt = insert(HourlyRFFeatureORM).values(hourly_rf_feature_data)
 
             upsert_stmt = insert_stmt.on_conflict_do_update(
-                index_elements=[HourlyRFFeatureORM.site_id, HourlyRFFeatureORM.timestamp],
+                index_elements=[
+                    HourlyRFFeatureORM.site_id,
+                    HourlyRFFeatureORM.timestamp,
+                ],
                 set_={
                     "date": insert_stmt.excluded.date,
                     "year": insert_stmt.excluded.year,
                     "month": insert_stmt.excluded.month,
                     "hour": insert_stmt.excluded.hour,
-
                     "flow_cfs": insert_stmt.excluded.flow_cfs,
                     "prec": insert_stmt.excluded.prec,
                     "tobs": insert_stmt.excluded.tobs,
                     "wteq": insert_stmt.excluded.wteq,
                     "snwd": insert_stmt.excluded.snwd,
                     "oni_value": insert_stmt.excluded.oni_value,
-
                     "month_sin": insert_stmt.excluded.month_sin,
                     "month_cos": insert_stmt.excluded.month_cos,
                     "hour_sin": insert_stmt.excluded.hour_sin,
                     "hour_cos": insert_stmt.excluded.hour_cos,
-
                     "flow_cfs_lag1": insert_stmt.excluded.flow_cfs_lag1,
                     "flow_cfs_lag3": insert_stmt.excluded.flow_cfs_lag3,
                     "flow_cfs_lag6": insert_stmt.excluded.flow_cfs_lag6,
@@ -67,7 +67,6 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
                     "snwd_lag6": insert_stmt.excluded.snwd_lag6,
                     "snwd_lag24": insert_stmt.excluded.snwd_lag24,
                     "snwd_lag168": insert_stmt.excluded.snwd_lag168,
-
                     # rolling stats
                     "flow_cfs_rollmean_3h": insert_stmt.excluded.flow_cfs_rollmean_3h,
                     "flow_cfs_rollstd_3h": insert_stmt.excluded.flow_cfs_rollstd_3h,
@@ -81,7 +80,6 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
                     "flow_cfs_rollmean_168h": insert_stmt.excluded.flow_cfs_rollmean_168h,
                     "flow_cfs_rollstd_168h": insert_stmt.excluded.flow_cfs_rollstd_168h,
                     "flow_cfs_rollsum_168h": insert_stmt.excluded.flow_cfs_rollsum_168h,
-
                     "prec_rollmean_3h": insert_stmt.excluded.prec_rollmean_3h,
                     "prec_rollstd_3h": insert_stmt.excluded.prec_rollstd_3h,
                     "prec_rollsum_3h": insert_stmt.excluded.prec_rollsum_3h,
@@ -94,7 +92,6 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
                     "prec_rollmean_168h": insert_stmt.excluded.prec_rollmean_168h,
                     "prec_rollstd_168h": insert_stmt.excluded.prec_rollstd_168h,
                     "prec_rollsum_168h": insert_stmt.excluded.prec_rollsum_168h,
-
                     "tobs_rollmean_3h": insert_stmt.excluded.tobs_rollmean_3h,
                     "tobs_rollstd_3h": insert_stmt.excluded.tobs_rollstd_3h,
                     "tobs_rollmean_6h": insert_stmt.excluded.tobs_rollmean_6h,
@@ -103,7 +100,6 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
                     "tobs_rollstd_24h": insert_stmt.excluded.tobs_rollstd_24h,
                     "tobs_rollmean_168h": insert_stmt.excluded.tobs_rollmean_168h,
                     "tobs_rollstd_168h": insert_stmt.excluded.tobs_rollstd_168h,
-
                     "wteq_rollmean_3h": insert_stmt.excluded.wteq_rollmean_3h,
                     "wteq_rollstd_3h": insert_stmt.excluded.wteq_rollstd_3h,
                     "wteq_rollmean_6h": insert_stmt.excluded.wteq_rollmean_6h,
@@ -112,7 +108,6 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
                     "wteq_rollstd_24h": insert_stmt.excluded.wteq_rollstd_24h,
                     "wteq_rollmean_168h": insert_stmt.excluded.wteq_rollmean_168h,
                     "wteq_rollstd_168h": insert_stmt.excluded.wteq_rollstd_168h,
-
                     "snwd_rollmean_3h": insert_stmt.excluded.snwd_rollmean_3h,
                     "snwd_rollstd_3h": insert_stmt.excluded.snwd_rollstd_3h,
                     "snwd_rollmean_6h": insert_stmt.excluded.snwd_rollmean_6h,
@@ -121,14 +116,12 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
                     "snwd_rollstd_24h": insert_stmt.excluded.snwd_rollstd_24h,
                     "snwd_rollmean_168h": insert_stmt.excluded.snwd_rollmean_168h,
                     "snwd_rollstd_168h": insert_stmt.excluded.snwd_rollstd_168h,
-
                     "snowmelt_proxy": insert_stmt.excluded.snowmelt_proxy,
                     "prec_tobs": insert_stmt.excluded.prec_tobs,
                     "tobs_snwd": insert_stmt.excluded.tobs_snwd,
                     "prec_efficiency": insert_stmt.excluded.prec_efficiency,
                     "oni_lag1m": insert_stmt.excluded.oni_lag1m,
                     "oni_interaction": insert_stmt.excluded.oni_interaction,
-
                     "updated_at": insert_stmt.excluded.updated_at,
                 },
             )

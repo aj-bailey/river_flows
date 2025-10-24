@@ -10,27 +10,21 @@ USGS_URL = "https://waterservices.usgs.gov/nwis/iv"
 USGS_EWRSD_SITE = "09067020"
 
 SITE_MAPPING = {
-    "09067020": {
-        "SNOTEL": "842:CO:SNTL"
-    },
-    "09067020": {
-        "SNOTEL": "842:CO:SNTL"
-    },
-    "09065500": {
-        "SNOTEL": "842:CO:SNTL"
-    },
+    "09067020": {"SNOTEL": "842:CO:SNTL"},
+    "09067020": {"SNOTEL": "842:CO:SNTL"},
+    "09065500": {"SNOTEL": "842:CO:SNTL"},
 }
 
 ONI_MAPPING = {
-    1:  "djf",
-    2:  "jfm",
-    3:  "fma",
-    4:  "mam",
-    5:  "amj",
-    6:  "mjj",
-    7:  "jja",
-    8:  "jas",
-    9:  "aso",
+    1: "djf",
+    2: "jfm",
+    3: "fma",
+    4: "mam",
+    5: "amj",
+    6: "mjj",
+    7: "jja",
+    8: "jas",
+    9: "aso",
     10: "son",
     11: "ond",
     12: "ndj",

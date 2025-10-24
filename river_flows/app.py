@@ -14,8 +14,14 @@ from river_flows.data.requests import (
     PopulateSiteConditionsRequest,
     PopulateSnotelRequest,
 )
-from river_flows.data.responses import ONIResponse, SiteConditionsResponse, SnotelResponse
-from river_flows.handlers.populate_hourly_river_flow_features_handler import PopulateHourlyRiverFlowFeaturesHandler
+from river_flows.data.responses import (
+    ONIResponse,
+    SiteConditionsResponse,
+    SnotelResponse,
+)
+from river_flows.handlers.populate_hourly_river_flow_features_handler import (
+    PopulateHourlyRiverFlowFeaturesHandler,
+)
 from river_flows.handlers.populate_oni_handler import PopulateONIHandler
 from river_flows.handlers.populate_site_conditions_handler import (
     PopulateSiteConditionsHandler,
@@ -24,11 +30,17 @@ from river_flows.handlers.oni_handler import ONIHandler
 from river_flows.handlers.populate_snotel_handler import PopulateSnotelHandler
 from river_flows.handlers.site_conditions_handler import SiteConditionsHandler
 from river_flows.handlers.snotel_handler import SnotelHandler
-from river_flows.repositories.hourly_river_flow_features_repository import HourlyRiverFlowFeaturesRepository
+from river_flows.repositories.hourly_river_flow_features_repository import (
+    HourlyRiverFlowFeaturesRepository,
+)
 from river_flows.repositories.oni_repository import ONIRepository
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
 from river_flows.repositories.snotel_repository import SnotelRepository
-from river_flows.utils.db import initialize_db, get_session, get_multi_transaction_session
+from river_flows.utils.db import (
+    initialize_db,
+    get_session,
+    get_multi_transaction_session,
+)
 
 
 @asynccontextmanager
@@ -165,6 +177,7 @@ def populate_oni(
         "count_oni_populated": count_snotel_upserted,
     }
 
+
 @app.get("/oni")
 def oni(session=Depends(get_session)):
     oni_repository = ONIRepository(session)
@@ -177,10 +190,11 @@ def oni(session=Depends(get_session)):
 
     return ONIResponse(result="success", data=oni_data)
 
+
 @app.post("/populate_hourly_river_flow_features")
 def populate_hourly_river_flow_features(
     request_params: PopulateHourlyRiverFlowFeaturesRequest,
-    session=Depends(get_multi_transaction_session)
+    session=Depends(get_multi_transaction_session),
 ):
     oni_repository = ONIRepository(session)
     snotel_repository = SnotelRepository(session)
@@ -191,9 +205,8 @@ def populate_hourly_river_flow_features(
         oni_repository=oni_repository,
         site_condition_repository=site_condition_repository,
         snotel_repository=snotel_repository,
-        hourly_river_flow_features_repository=hourly_river_flow_features_repository
+        hourly_river_flow_features_repository=hourly_river_flow_features_repository,
     )
-
 
     try:
         count_features_upserted = handler.handle(request_params=request_params)
@@ -204,5 +217,3 @@ def populate_hourly_river_flow_features(
         "hourly_river_flow_features_populated": True,
         "count_features_populated": count_features_upserted,
     }
-
-

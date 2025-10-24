@@ -112,10 +112,9 @@ class BatchHourlyRFFeatures(BaseModel):
     batch_size: int
     batch_hourly_rf_features: list[list[HourlyRFFeature]]
     hourly_rf_feature_data: list[HourlyRFFeature]
-    
+
     @model_validator(mode="before")
     def batch_values(cls, values):
-        
         if "hourly_rf_feature_data" not in values.keys():
             raise HourlyRFFeatureException()
 
