@@ -1,7 +1,6 @@
 from datetime import datetime
-from typing import Optional
 
-from pydantic import BaseModel, model_validator, ValidationError
+from pydantic import BaseModel, model_validator
 
 from river_flows.data.exceptions import SiteConditionsException
 

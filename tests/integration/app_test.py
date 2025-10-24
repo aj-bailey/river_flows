@@ -1,10 +1,7 @@
-from datetime import datetime, timezone
 
 import pytest
 import vcr
 
-from river_flows.data.site_condition import SiteCondition
-from river_flows.repositories.site_condition_repository import SiteConditionRepository
 
 
 TEST_PATH = "tests/fixtures/integration/app_test/"

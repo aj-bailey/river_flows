@@ -2,7 +2,7 @@ from datetime import timedelta
 from dateutil.parser import parse
 
 from river_flows.clients.usgs_client import USGSClient
-from river_flows.data.site_condition import BatchSiteConditions, SiteCondition
+from river_flows.data.site_condition import BatchSiteConditions
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
 
 

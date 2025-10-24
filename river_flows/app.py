@@ -1,9 +1,7 @@
 from contextlib import asynccontextmanager
-from datetime import date
 
 from fastapi import Depends, FastAPI
 
-from river_flows.background_jobs.scheduler import schedule_jobs
 from river_flows.clients.usgs_client import USGSClient
 from river_flows.clients.snotel_client import SnotelAPIClient
 from river_flows.data.requests import (
@@ -77,7 +75,7 @@ def populate_site_conditions(
         count_site_conditions_upserted = handler.handle(
             start_date=start_date, end_date=end_date
         )
-    except Exception as e:
+    except Exception:
         return {"site_conditions_populated": False}
 
     return {
@@ -126,7 +124,7 @@ def populate_snotel_year(
         count_snotel_upserted = handler.handle(
             year=year, station_triplets=station_triplets
         )
-    except Exception as e:
+    except Exception:
         return {"site_conditions_populated": False}
 
     return {
@@ -169,7 +167,7 @@ def populate_oni(
 
     try:
         count_snotel_upserted = handler.handle(year=year)
-    except Exception as e:
+    except Exception:
         return {"oni_populated": False}
 
     return {

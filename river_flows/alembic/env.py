@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from river_flows.config.config import ALEMBIC_DB_URL, DATABASE_URL
+from river_flows.config.config import DATABASE_URL
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -20,10 +20,6 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from river_flows.orm.base import Base
-from river_flows.orm.site_condition import SiteCondition
-from river_flows.orm.snotel import Snotel
-from river_flows.orm.oni import ONI
-from river_flows.orm.hourly_rf_feature import HourlyRFFeature
 
 # target_metadata = Base.metadata
 target_metadata = Base.metadata

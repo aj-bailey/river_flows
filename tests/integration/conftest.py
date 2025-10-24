@@ -4,7 +4,6 @@ import pytest
 from sqlalchemy import create_engine
 
 from river_flows.orm.site_condition import SiteCondition as SiteConditionORM
-from river_flows.repositories.site_condition_repository import SiteConditionRepository
 from river_flows.utils.db import TransactionalSession
 from tests.utils.db import clean_database
 

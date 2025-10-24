@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-from river_flows.clients.usgs_client import USGSClient
 from river_flows.config.config import USGS_EWRSD_SITE
 from river_flows.data.site_condition import SiteCondition
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
