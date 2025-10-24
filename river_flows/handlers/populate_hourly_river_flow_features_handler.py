@@ -1,9 +1,10 @@
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 import pandas as pd
+import numpy as np
 
 from river_flows.config.config import ONI_MAPPING, SITE_MAPPING, USGS_EWRSD_SITE
+from river_flows.data.hourly_rf_feature import HourlyRFFeature, BatchHourlyRFFeatures
 from river_flows.data.requests import PopulateHourlyRiverFlowFeaturesRequest
 from river_flows.repositories.hourly_river_flow_features_repository import HourlyRiverFlowFeaturesRepository
 from river_flows.repositories.oni_repository import ONIRepository
@@ -36,16 +37,19 @@ class PopulateHourlyRiverFlowFeaturesHandler:
         
         
         # Retrieve Data
-        df = self._retrieve_raw_data(year=year, site_id=site_id)
-        import ipdb; ipdb.set_trace()
+        raw_df = self._retrieve_raw_data(year=year, site_id=site_id)
 
         # Clean Data
-        self._clean_raw_data(df=df)
+        cleaned_df = self._clean_raw_data(df=raw_df)
 
         # Create Features
+        hourly_feats_df = self._generate_features(df=cleaned_df)
 
-        # Scale Features
-        pass
+        # Store Features
+        upsert_count = self._write_features(df=hourly_feats_df)
+
+        return upsert_count
+
 
     def _retrieve_raw_data(self, year: int, site_id: str) -> pd.DataFrame:
         site_condition_cols = ["timestamp", "site_id", "value"]
@@ -58,6 +62,7 @@ class PopulateHourlyRiverFlowFeaturesHandler:
         df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
 
         # Add Temporal Fields
+        df['hour'] = df['timestamp'].dt.hour
         df['month'] = df['timestamp'].dt.month
         df['year'] = df['timestamp'].dt.year
         df['date'] = df['timestamp'].dt.date
@@ -89,9 +94,66 @@ class PopulateHourlyRiverFlowFeaturesHandler:
 
         return df
 
-    def _clean_raw_data(df: pd.DataFrame) -> pd.DataFrame:
-        
-        
+    def _clean_raw_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        df['site_id'] = df.site_id.mode()[0]
+        df['flow_cfs'].ffill(inplace=True)
         
         return df
 
+
+    def _generate_features(self, df: pd.DataFrame) -> BatchHourlyRFFeatures:
+        # cyclical time feats
+        df["month_sin"] = np.sin(2 * np.pi * df["month"] / 12)
+        df["month_cos"] = np.cos(2 * np.pi * df["month"] / 12)
+        df["hour_sin"] = np.sin(2 * np.pi * df["hour"] / 24)
+        df["hour_cos"] = np.cos(2 * np.pi * df["hour"] / 24)
+
+        # lag feats
+        lag_hours = [1, 3, 6, 24, 168]  # 1h, 3h, 6h, 1d, 7d
+        for col in ["flow_cfs", "prec", "tobs", "wteq", "snwd"]:
+            for lag in lag_hours:
+                df[f"{col}_lag{lag}"] = df.groupby("site_id")[col].shift(lag)
+
+        windows = [3, 6, 24, 168]  # 3h, 6h, 1d, 7d
+        for col in ["flow_cfs", "prec", "tobs", "wteq", "snwd"]:
+            for w in windows:
+                df[f"{col}_rollmean_{w}h"] = (
+                    df.groupby("site_id")[col].shift(1).rolling(window=w).mean()
+                )
+                df[f"{col}_rollstd_{w}h"] = (
+                    df.groupby("site_id")[col].shift(1).rolling(window=w).std()
+                )
+                if col in ["prec", "flow_cfs"]:
+                    df[f"{col}_rollsum_{w}h"] = (
+                        df.groupby("site_id")[col].shift(1).rolling(window=w).sum()
+                    )
+
+        # Hydrological feats
+        df["snowmelt_proxy"] = df.groupby("site_id")["wteq"].diff(periods=24) * -1
+        df["prec_tobs"] = df["prec"] * df["tobs"]
+        df["tobs_snwd"] = df["tobs"] * df["snwd"]
+        df["prec_efficiency"] = df["prec"] / (df["snwd"] + 1)
+
+        # Climate feats
+        df["oni_lag1m"] = df.groupby("site_id")["oni_value"].shift(24*30)  # 1 month lag
+        df["oni_interaction"] = df["oni_value"] * df["month_sin"]
+
+
+        # Backfill columns, lag feats produce nulls
+        df.dropna(inplace=True)
+
+        df = df.reset_index()
+
+
+        return df
+
+
+    def _write_features(self, df: pd.DataFrame) -> int:
+        records = df.to_dict(orient="records")
+
+        hourly_feats = [HourlyRFFeature.model_validate(record) for record in records]
+        batch_hourly_feats = BatchHourlyRFFeatures(hourly_rf_feature_data=hourly_feats)
+        
+        upsert_count = self.hourly_rf_feat_repository.upsert_records(records=batch_hourly_feats)
+
+        return upsert_count

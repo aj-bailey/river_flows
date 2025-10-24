@@ -28,16 +28,17 @@ def populate_hourly_rf_feat_handler(initialize_and_clean_db):
 def test__handle__success(populate_hourly_rf_feat_handler):
     # Arrange
     handler = populate_hourly_rf_feat_handler
-    year = 2024
+    year = 2010
     site_id = USGS_EWRSD_SITE
     request_params = PopulateHourlyRiverFlowFeaturesRequest(year=year, site_id=site_id)
     
     
     # Act
-    df = handler.handle(request_params=request_params)
+    upsert_count = handler.handle(request_params=request_params)
     
     # Assert
-    pass
+    assert isinstance(upsert_count, int)
+    assert upsert_count == 8808
 
 def test___retrieve_raw_data__success(populate_hourly_rf_feat_handler):
     # Arrange
@@ -49,7 +50,8 @@ def test___retrieve_raw_data__success(populate_hourly_rf_feat_handler):
     df = handler._retrieve_raw_data(year=year, site_id=site_id)
     
     # Assert
-    expected_cols = ['timestamp', 'month', 'year', 'date', 'site_id', 'flow_cfs', 'prec', 'tobs', 'wteq', 'snwd', 'oni_value']
+
+    expected_cols = ['timestamp', 'hour', 'month', 'year', 'date', 'site_id', 'flow_cfs', 'prec', 'tobs', 'wteq', 'snwd', 'oni_value']
 
     assert isinstance(df, pd.DataFrame)
     assert df.columns.to_list() == expected_cols

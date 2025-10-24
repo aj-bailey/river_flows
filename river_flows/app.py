@@ -28,13 +28,13 @@ from river_flows.repositories.hourly_river_flow_features_repository import Hourl
 from river_flows.repositories.oni_repository import ONIRepository
 from river_flows.repositories.site_condition_repository import SiteConditionRepository
 from river_flows.repositories.snotel_repository import SnotelRepository
-from river_flows.utils.db import initialize_db, get_session
+from river_flows.utils.db import initialize_db, get_session, get_multi_transaction_session
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     initialize_db()
-    schedule_jobs()
+    # schedule_jobs()
     yield
 
 
@@ -180,7 +180,7 @@ def oni(session=Depends(get_session)):
 @app.post("/populate_hourly_river_flow_features")
 def populate_hourly_river_flow_features(
     request_params: PopulateHourlyRiverFlowFeaturesRequest,
-    session=Depends(get_session)
+    session=Depends(get_multi_transaction_session)
 ):
     oni_repository = ONIRepository(session)
     snotel_repository = SnotelRepository(session)
@@ -188,17 +188,17 @@ def populate_hourly_river_flow_features(
     hourly_river_flow_features_repository = HourlyRiverFlowFeaturesRepository(session)
 
     handler = PopulateHourlyRiverFlowFeaturesHandler(
-        request_params=request_params,
         oni_repository=oni_repository,
-        site_condition_repo=site_condition_repository,
+        site_condition_repository=site_condition_repository,
         snotel_repository=snotel_repository,
         hourly_river_flow_features_repository=hourly_river_flow_features_repository
     )
 
+
     try:
-        count_features_upserted = handler.handle()
+        count_features_upserted = handler.handle(request_params=request_params)
     except Exception as e:
-        return {"hourly_river_flow_features_populated": False}
+        return {"hourly_river_flow_features_populated": False, "error": str(e)}
 
     return {
         "hourly_river_flow_features_populated": True,

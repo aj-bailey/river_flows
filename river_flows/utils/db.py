@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine, Engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy_utils import create_database, database_exists
 
 from river_flows.config.config import DATABASE_URL
@@ -28,6 +28,7 @@ def initialize_db():
         raise DatabaseInitializationException
 
 
+# TODO: Replace get_session with get_multi_transaction_session and update functions to use this pattern instead
 @contextmanager
 def get_session():
     session = TransactionalSession()
@@ -36,5 +37,17 @@ def get_session():
         yield session
     except Exception as e:
         raise DatabaseEngineException(str(e))
+    finally:
+        session.close()
+
+def get_multi_transaction_session():
+    session = TransactionalSession()
+
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
     finally:
         session.close()
