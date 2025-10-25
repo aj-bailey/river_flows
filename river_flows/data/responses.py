@@ -2,6 +2,7 @@ from typing import Generic, Optional, TypeVar
 
 from pydantic import BaseModel
 
+from river_flows.data.hourly_rf_feature import HourlyRFFeature
 from river_flows.data.oni import ONI
 from river_flows.data.site_condition import SiteCondition
 from river_flows.data.snotel import Snotel
@@ -29,4 +30,7 @@ class SnotelResponse(BaseResponse[list[Snotel]]):
 
 
 class ONIResponse(BaseResponse[list[ONI]]):
+    pass
+
+class HRFFeatureResponse(BaseResponse[list[HourlyRFFeature]]):
     pass

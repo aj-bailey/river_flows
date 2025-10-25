@@ -5,6 +5,7 @@ from fastapi import Depends, FastAPI
 from river_flows.clients.usgs_client import USGSClient
 from river_flows.clients.snotel_client import SnotelAPIClient
 from river_flows.data.requests import (
+    GetHRFFeaturesRequest,
     GetSiteConditionsRequest,
     GetSnotelRequest,
     PopulateHourlyRiverFlowFeaturesRequest,
@@ -13,10 +14,12 @@ from river_flows.data.requests import (
     PopulateSnotelRequest,
 )
 from river_flows.data.responses import (
+    HRFFeatureResponse,
     ONIResponse,
     SiteConditionsResponse,
     SnotelResponse,
 )
+from river_flows.handlers.hourly_river_flow_features_handler import HourlyRiverFlowFeaturesHandler
 from river_flows.handlers.populate_hourly_river_flow_features_handler import (
     PopulateHourlyRiverFlowFeaturesHandler,
 )
@@ -203,3 +206,19 @@ def populate_hourly_river_flow_features(
         "hourly_river_flow_features_populated": True,
         "count_features_populated": count_features_upserted,
     }
+
+
+@app.get("/hourly_river_flow_features")
+def get_hourly_river_flow_features(request_params: GetHRFFeaturesRequest = Depends(), session=Depends(get_session)):
+    hourly_river_flow_features_repository = HourlyRiverFlowFeaturesRepository(session)
+    handler = HourlyRiverFlowFeaturesHandler(hourly_river_flow_features_repository=hourly_river_flow_features_repository)
+
+    year = int(request_params.year)
+    site_id = request_params.site_id
+
+    try:
+        feature_data = handler.handle(year=year, site_id=site_id)
+    except Exception as e:
+        return HRFFeatureResponse(result="failure", error=str(e))
+
+    return HRFFeatureResponse(result="success", data=feature_data)

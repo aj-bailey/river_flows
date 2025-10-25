@@ -1,7 +1,7 @@
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
-from river_flows.data.hourly_rf_feature import BatchHourlyRFFeatures
+from river_flows.data.hourly_rf_feature import BatchHourlyRFFeatures, HourlyRFFeature
 from river_flows.orm.hourly_rf_feature import HourlyRFFeature as HourlyRFFeatureORM
 from river_flows.repositories.base import AbstractRepository
 
@@ -131,5 +131,18 @@ class HourlyRiverFlowFeaturesRepository(AbstractRepository):
 
         return total
 
-    def get_records(self) -> list:
-        pass
+    def get_records(self, year: int, site_id: str) -> list:
+        with self.session as session:
+            with session.begin():
+                records = (
+                    session.query(HourlyRFFeatureORM)
+                    .filter(
+                        HourlyRFFeatureORM.year == year,
+                        HourlyRFFeatureORM.site_id == site_id,
+                    )
+                    .all()
+                )
+
+            results = [HourlyRFFeature.model_validate(record) for record in records]
+
+        return results
