@@ -9,7 +9,7 @@ from river_flows.data.exceptions import UnableToFindONITableException
 
 class ONIScraper:
     def __init__(self):
-        self.oni_url = "https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php"
+        self.oni_url = "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php"
 
     def scrape_oni_data(self) -> pd.DataFrame:
         """
