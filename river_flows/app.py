@@ -213,7 +213,7 @@ def get_hourly_river_flow_features(request_params: GetHRFFeaturesRequest = Depen
     hourly_river_flow_features_repository = HourlyRiverFlowFeaturesRepository(session)
     handler = HourlyRiverFlowFeaturesHandler(hourly_river_flow_features_repository=hourly_river_flow_features_repository)
 
-    year = int(request_params.year)
+    year = request_params.year
     site_id = request_params.site_id
 
     try:
